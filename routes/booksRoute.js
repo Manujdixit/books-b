@@ -3,34 +3,32 @@ import { Book } from "../models/bookmodel.js";
 
 const router = express.Router();
 
-//route to save new book
+// Route to save a new book
 router.post("/", async (req, res) => {
   try {
-    if (
-      !req.body.title ||
-      // !req.body.author ||
-      !req.body.finishtill ||
-      !req.body.text
-    ) {
+    // Validate request body
+    if (!req.body.title || !req.body.finishtill || !req.body.text) {
       return res.status(400).send({
-        message: "Send all required fields: e1",
+        message: "Send all required fields: title, finishtill, text",
       });
     }
+
+    // Create a new book
     const newBook = {
       title: req.body.title,
-      // author: req.body.author,
       finishtill: req.body.finishtill,
       text: req.body.text,
     };
+
     const book = await Book.create(newBook);
     return res.status(201).send(book);
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send({ message: error.message });
+    console.error(error.message);
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 });
 
-//route for get all all books
+// Route to get all books
 router.get("/", async (req, res) => {
   try {
     const books = await Book.find();
@@ -40,83 +38,77 @@ router.get("/", async (req, res) => {
       data: books,
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send({
-      message: error.message,
-    });
+    console.error(error.message);
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 });
 
-//route for get one book
+// Route to get one book by ID
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const book = await Book.findById(id);
+    
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
     return res.status(200).json(book);
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send({
-      message: error.message,
-    });
-    console.log("error.message");
+    console.error(error.message);
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 });
 
-//route for update a book
+// Route to update a book by ID
 router.put("/:id", async (req, res) => {
   try {
+    // Validate request body
     if (!req.body.title || !req.body.text || !req.body.finishtill) {
       return res.status(400).send({
-        message: "Send all required fields: title, text, finish date",
+        message: "Send all required fields: title, text, finishtill",
       });
     }
+
     const { id } = req.params;
-    try {
-      const result = await Book.findByIdAndUpdate(id, req.body);
+    const result = await Book.findByIdAndUpdate(id, req.body, { new: true });
 
-      if (!result) {
-        return res.status(404).json({
-          message: "Note not found",
-        });
-      }
-
-      return res.status(200).send({
-        message: "Note updated successfully",
+    if (!result) {
+      return res.status(404).json({
+        message: "Book not found",
       });
-    } catch (error) {
-      if (error.name === "CastError") {
-        // Handle invalid ObjectId
-        return res.status(400).json({
-          message: "Invalid note ID",
-        });
-      }
-      throw error;
     }
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send({
-      message: error.message,
+
+    return res.status(200).send({
+      message: "Book updated successfully",
     });
+  } catch (error) {
+    console.error(error.message);
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid book ID",
+      });
+    }
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 });
 
-//route for delete a book
+// Route to delete a book by ID
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await Book.findByIdAndDelete(id);
 
     if (!result) {
-      return res.status(404).json({ message: "Note not found" });
+      return res.status(404).json({ message: "Book not found" });
     }
+
     return res.status(200).send({
-      message: "Note deleted successfully",
+      message: "Book deleted successfully",
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send({
-      message: error.message,
-    });
+    console.error(error.message);
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 });
 
