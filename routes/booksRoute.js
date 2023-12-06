@@ -8,7 +8,7 @@ router.post("/", async (req, res) => {
   try {
     if (
       !req.body.title ||
-      !req.body.author ||
+      // !req.body.author ||
       !req.body.publishYear ||
       !req.body.text
     ) {
@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
     }
     const newBook = {
       title: req.body.title,
-      author: req.body.author,
+      // author: req.body.author,
       publishYear: req.body.publishYear,
       text: req.body.text,
     };
@@ -65,7 +65,11 @@ router.get("/:id", async (req, res) => {
 //route for update a book
 router.put("/:id", async (req, res) => {
   try {
-    if (!req.body.title || !req.body.author || !req.body.publishYear) {
+    if (
+      !req.body.title ||
+      // !req.body.author ||
+      !req.body.publishYear
+    ) {
       return res.status(400).send({
         message: "Send all required fields: title, author, publishYear",
       });
