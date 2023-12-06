@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
       !req.body.text
     ) {
       return res.status(400).send({
-        message: "Send all required fields: title, author, publishYear",
+        message: "Send all required fields: e1",
       });
     }
     const newBook = {
