@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
     const newBook = {
       title: req.body.title,
       // author: req.body.author,
-      publishYear: req.body.publishYear,
+      finishtill: req.body.finishtill,
       text: req.body.text,
     };
     const book = await Book.create(newBook);
@@ -65,13 +65,9 @@ router.get("/:id", async (req, res) => {
 //route for update a book
 router.put("/:id", async (req, res) => {
   try {
-    if (
-      !req.body.title ||
-      // !req.body.author ||
-      !req.body.publishYear
-    ) {
+    if (!req.body.title || !req.body.text || !req.body.finishtill) {
       return res.status(400).send({
-        message: "Send all required fields: title, author, publishYear",
+        message: "Send all required fields: title, text, finish date",
       });
     }
     const { id } = req.params;
@@ -80,18 +76,18 @@ router.put("/:id", async (req, res) => {
 
       if (!result) {
         return res.status(404).json({
-          message: "Book not found",
+          message: "Note not found",
         });
       }
 
       return res.status(200).send({
-        message: "Book updated successfully",
+        message: "Note updated successfully",
       });
     } catch (error) {
       if (error.name === "CastError") {
         // Handle invalid ObjectId
         return res.status(400).json({
-          message: "Invalid book ID",
+          message: "Invalid note ID",
         });
       }
       throw error;
@@ -111,10 +107,10 @@ router.delete("/:id", async (req, res) => {
     const result = await Book.findByIdAndDelete(id);
 
     if (!result) {
-      return res.status(404).json({ message: "Book not found" });
+      return res.status(404).json({ message: "Note not found" });
     }
     return res.status(200).send({
-      message: "Book deleted successfully",
+      message: "Note deleted successfully",
     });
   } catch (error) {
     console.log(error.message);
