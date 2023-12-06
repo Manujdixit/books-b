@@ -8,7 +8,7 @@ router.post("/", async (req, res) => {
   try {
     if (!req.body.title || !req.body.text || !req.body.tobefinished) {
       return res.status(400).send({
-        message: "Send all required fields: title, author, publishYear",
+        message: "Send all required fields: e1",
       });
     }
     const newBook = {
