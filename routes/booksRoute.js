@@ -6,14 +6,20 @@ const router = express.Router();
 //route to save new book
 router.post("/", async (req, res) => {
   try {
-    if (!req.body.title || !req.body.text || !req.body.tobefinished) {
+    if (
+      !req.body.title ||
+      !req.body.author ||
+      !req.body.publishYear ||
+      !req.body.text
+    ) {
       return res.status(400).send({
         message: "Send all required fields: title, author, publishYear",
       });
     }
     const newBook = {
       title: req.body.title,
-      tobefinished: req.body.tobefinished,
+      author: req.body.author,
+      publishYear: req.body.publishYear,
       text: req.body.text,
     };
     const book = await Book.create(newBook);
@@ -59,9 +65,9 @@ router.get("/:id", async (req, res) => {
 //route for update a book
 router.put("/:id", async (req, res) => {
   try {
-    if (!req.body.title || !req.body.text || !req.body.tobefinished) {
+    if (!req.body.title || !req.body.author || !req.body.publishYear) {
       return res.status(400).send({
-        message: "Send all required fields: title, text, tobefinished",
+        message: "Send all required fields: title, author, publishYear",
       });
     }
     const { id } = req.params;
@@ -70,18 +76,18 @@ router.put("/:id", async (req, res) => {
 
       if (!result) {
         return res.status(404).json({
-          message: "Note not found",
+          message: "Book not found",
         });
       }
 
       return res.status(200).send({
-        message: "Note updated successfully",
+        message: "Book updated successfully",
       });
     } catch (error) {
       if (error.name === "CastError") {
         // Handle invalid ObjectId
         return res.status(400).json({
-          message: "Invalid Note ID",
+          message: "Invalid book ID",
         });
       }
       throw error;
@@ -101,10 +107,10 @@ router.delete("/:id", async (req, res) => {
     const result = await Book.findByIdAndDelete(id);
 
     if (!result) {
-      return res.status(404).json({ message: "Note not found" });
+      return res.status(404).json({ message: "Book not found" });
     }
     return res.status(200).send({
-      message: "Note deleted successfully",
+      message: "Book deleted successfully",
     });
   } catch (error) {
     console.log(error.message);
