@@ -9,7 +9,7 @@ router.post("/", async (req, res) => {
     if (
       !req.body.title ||
       // !req.body.author ||
-      !req.body.publishYear ||
+      !req.body.finishtill ||
       !req.body.text
     ) {
       return res.status(400).send({

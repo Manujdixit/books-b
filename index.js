@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
   return res.status(234).send("welcome");
 });
 
-app.use("/books", booksRoute);
+app.use("/notes", booksRoute);
 
 mongoose
   .connect(uri)
