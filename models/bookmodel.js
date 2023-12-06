@@ -15,7 +15,7 @@ const bookSchema = mongoose.Schema(
     //   required: true,
     // },
     finishtill: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
