@@ -22,7 +22,7 @@ app.use(cors());
 
 app.get("/", (req, res) => {
   console.log(req);
-  return res.status(234).send("welcome");
+  return res.status(200).send("welcome");
 });
 
 app.use("/notes", booksRoute);
